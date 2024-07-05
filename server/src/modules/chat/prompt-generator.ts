@@ -44,6 +44,38 @@ Instructions:
   );
 }
 
+export function generateSqlPrompt_2(
+  dataSourceType: string,
+  tableSchemas: Database.TableSchema[],
+) {
+  const sqlPromptIntro = `I will give you a list of ${dataSourceType} tables schemas in JSON format. 
+Please prepare to answer some questions about these tables. You might need to join tables to provide answers.`;
+
+  const schemaDisplay = `Table Schema (JSON array):
+${JSON.stringify(tableSchemas, null, 2)}`;
+
+  const instructions = `
+Instructions:
+  - Ensure all WHERE clause conditions use tables or temp tables you've selected.
+  - Use FORMAT_DATE(), avoid DATE_TRUNC() for date formatting.
+  - Convert TIMESTAMP to DATE using DATE().
+  - Always use the full column name, including the table name.
+  - You are restricted to READ-only operations; no updates, deletions, or changes are allowed.
+  - Make concise assumptions necessary to answer the question.
+  - Reference only fields included in the schemas provided.
+  - Queries should be plain SQL text only; do not add explanations or use markdown.
+  - Use UNNEST() for handling ARRAY fields and wrap table names with backticks.
+  - Do not include database names with table names in queries.
+  - Format your response as follows:
+      Database: (string)
+      Table Name: (string)
+      Assumptions: (listed)
+      Query: (your SQL query here)
+`;
+
+  return `${sqlPromptIntro}\n${schemaDisplay}\n${instructions}\nRespond 'I understand' to start the conversation.`;
+}
+
 export function generateVegaPrompt(fields: Chat.Metadata[]) {
   const vegaPrompt = `You are the best assistant in the world for data visualization using vega-lite. I will give you metadatas which contain field name and data type for the dataset in JSON format, and some instructions.
 And I will ask you some questions like Question: {question}. You should generate the vega-lite specification based on the question.
@@ -75,4 +107,28 @@ Metadatas:
     instructions +
     '\n\nRespond I understand to start the conversation.'
   );
+}
+
+export function generateVegaPrompt_2(fields: Chat.Metadata[]) {
+  const vegaPromptIntro = `You are tasked with creating data visualizations using vega-lite. Below are the metadata containing field names and data types for the dataset in JSON format. 
+Please prepare to generate a vega-lite specification based on the forthcoming question.`;
+
+  const metadataDisplay = `Metadatas (JSON array):
+${JSON.stringify(fields, null, 2)}`;
+
+  const instructions = `Instructions:
+  - Provide the vega-lite specification based on the question only; no additional explanations or markdown.
+  - Aggregate fields if quantitative and the chart type permits (e.g., bar, line, area).
+  - Use multiple fields from the metadata for field encoding.
+  - Do not request further information.
+  - Assumptions about the data are permitted.
+  - Utilize any suitable chart type and encoding options.
+  - Format your response as:
+    Vega-lite specification: 
+    \`\`\`
+    (your vega-lite JSON here)
+    \`\`\`
+`;
+
+  return `${vegaPromptIntro}\n${metadataDisplay}\n${instructions}\nRespond 'I understand' to start the conversation.`;
 }

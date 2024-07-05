@@ -1,1 +1,1 @@
-export const DEFAULT_NAME = 'ChatBI';
+export const DEFAULT_NAME = 'ChatBI2.0';

@@ -1,6 +1,4 @@
-## ChatBI
-
-中文 | [English](README.en.md)
+## ChatBI 2.0
 
 ChatBI 是一个通过跟 AI 聊天来进行 BI 分析的系统。
 
@@ -33,7 +31,7 @@ npm install -g pnpm
 
 
 进入 `server` 目录，复制 `.env.example` 到 `.env` 并填写环境变量，如下：
-  
+
 ```bash
 # Database
 OPENAI_API_BASE_URL=https://api.openai.com
@@ -52,7 +50,7 @@ pnpm install
 ### 4. 安装依赖
 
 在项目根目录执行：
-  
+
 ```bash
 pnpm install
 ```
@@ -70,11 +68,11 @@ cd ./server/docker && docker-compose up -d
 1. 启动服务端：
 
 ```bash
-$ pnpm run dev:server
+pnpm run dev:server
 ```
 
 2. 启动客户端：
 
 ```bash
-$ pnpm run dev:client
+pnpm run dev:client
 ```

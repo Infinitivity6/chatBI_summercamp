@@ -21,29 +21,41 @@ export class OpenAI {
     message: string,
     parentMessageId: string | undefined = undefined,
   ): Promise<ChatMessage> {
-    const response = await this.api.sendMessage(message, {
-      parentMessageId,
-    });
-    return response;
+    try {
+      const response = await this.api.sendMessage(message, {
+        parentMessageId,
+      });
+      return response;
+    } catch (error) {
+      this.logger.error('发送消息失败，请检查网络！', error);
+      throw new Error('发送消息失败异常！');
+    }
   }
 
-  async chatCompletion(messages: Chat.ChatgptMessage[]): Promise<any> {
+  async chatCompletion(
+    messages: Chat.ChatgptMessage[],
+  ): Promise<Chat.IChatgptResponse> {
     const url = `${envs.OPENAI_API_BASE_URL}/v1/chat/completions`;
-    const response = await axios.post<Chat.IChatgptResponse>(
-      url,
-      {
-        model: 'gpt-3.5-turbo',
-        temperature: 0.05,
-        messages: messages,
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: 'Bearer ' + envs.OPENAI_API_KEY,
+    try {
+      const response = await axios.post<Chat.IChatgptResponse>(
+        url,
+        {
+          model: 'gpt-3.5-turbo',
+          temperature: 0.05,
+          messages: messages,
         },
-      },
-    );
-    return response;
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + envs.OPENAI_API_KEY,
+          },
+        },
+      );
+      return response.data; // 确保返回正确的内容
+    } catch (error) {
+      this.logger.error('获取chatCompletion失败', error);
+      throw new Error('chatCompletion获取失败异常');
+    }
   }
 }
 

@@ -7,7 +7,7 @@ export default defineConfig({
   initialState: {},
   request: {},
   layout: {
-    title: 'ChatBI',
+    title: 'ChatBI2.0',
   },
   routes: [
     {
@@ -20,7 +20,7 @@ export default defineConfig({
       component: './Home',
     },
     {
-      name: 'Query',
+      name: '查询',
       path: '/query',
       component: './Query',
     },
